@@ -1,0 +1,104 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from IPython.core.interactiveshell import InteractiveShell
+InteractiveShell.ast_node_interactivity = "all"
+
+
+df = pd.read_csv('Academic-Performance-Dataset.csv')
+
+
+print("------------------Shape of Dataset------------------")
+print(df.shape)
+print("\n")
+
+
+print("-----------------Data Types in Dataset-----------------")
+print(df.dtypes)
+print("\n")
+
+
+print("=====================Data Cleanning===================\n")
+
+
+print("-------------Handling Missing Values in Dataset-------------")
+print(df.isnull().sum())
+print("\n")
+
+
+print("--------------List of name of columns with missing values--------------")
+cols_with_missing = df.columns[df.isnull().any()]
+print(cols_with_missing)
+print("\n")
+
+
+print("-------------Filling Missing Values with Mean/Mode Imputation-------------")
+for col in cols_with_missing:
+    col_dt = df[col].dtype
+    if col_dt in ['int64', 'float64']:
+        outliers = (df[col] < 0) | (df[col] > 100)
+        df.loc[outliers, col] = np.nan
+        df[col] = df[col].fillna(df[col].mean())
+    else:
+        df[col] = df[col].ffill()
+print(df.head())
+print("\n")
+
+
+print("---------------Correction in Percentage & Total Marks Columns---------------")
+df['Total Marks']= (df['Phy_marks']+df['Che_marks']+df['EM1_marks']+df['PPS_marks']+df['SME_marks']).astype(int)
+df['Percentage']= df['Total Marks']/5
+print(df.head())
+print("\n")
+
+
+print("-------------After Handling Missing Values-------------")
+print(df.isnull().sum())
+
+
+print("=================Handling Outliers===================\n")
+
+
+print("-------------Identifying Outliers in Columns-------------")
+plt.rcParams["figure.figsize"] = (8,5)
+df_list = ['Attendence', 'Phy_marks', 'Che_marks', 'EM1_marks', 'PPS_marks', 'SME_marks']
+fig, axes = plt.subplots(2, 3)
+fig.set_dpi(120)
+
+
+count  = 0
+for r in range(2):
+    for c in range(3):
+        _ = df[df_list[count]].plot(kind = 'box', ax=axes[r,c])
+        count+=1
+
+
+print("-------------Removing Outliers from Che_Makrs Column-------------")
+q1 = df['Che_marks'].quantile(0.25)
+q3 = df['Che_marks'].quantile(0.75)
+
+
+Lower_limit = q1 - 1.5 * (q3 - q1)
+Upper_limit = q3 + 1.5 * (q3 - q1)
+
+
+print(f'q1 = {q1}, q3 = {q3}, IQR = {q3 -q1}, Lower_limit = {Lower_limit}, Upper_limit = {Upper_limit}')
+print(df[(df['Che_marks'] < Lower_limit) | (df['Che_marks'] > Upper_limit)])
+print("\n")
+
+
+print("=====================Binning (convert into normal distribution)========================\n")
+print("------------Gradding According to percentage")
+
+
+def BinningFunction(column, cut_points, labels = None) :
+    break_points=[column.min()] + cut_points + [column.max( )]
+    print('Gradding According to percentage \n<60 = F \n60-70 = B \n70-80 = A\n80-100 = O')
+    return pd.cut(column, bins=break_points, labels=labels, include_lowest=True)
+
+
+cut_points = [60, 70, 80]
+labels = ['F', 'B', 'A', 'O']
+df['Grade'] = BinningFunction(df['Percentage'], cut_points, labels)
+print(df.head(10))
+print("\n")

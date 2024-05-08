@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+df = pd.read_csv('iris.csv')
+
+
+print("------------------DataframeInfo-----------------")
+print(df.info())
+print("\n")
+
+
+print("-----------------Dataframe Shape-----------------")
+print(df.shape)
+print("\n")
+
+
+print("--------------Dataframe Describe---------------------")
+print(df.describe())
+print("\n")
+
+
+print("-----------------Basic Statistics (Iris-setosa)-----------------")
+df_setosa = df["Species"] == "Iris-setosa"
+print(df[df_setosa].describe())
+print("\n")
+
+
+print("-----------------Basic Statistics (Iris-versicolor)-----------------")
+df_versicolor = df["Species"] == "Iris-versicolor"
+print(df[df_versicolor].describe())
+print("\n")
+
+
+print("-----------------Basic Statistics (Iris-virginica)-----------------")
+df_virginica = df["Species"] == "Iris-virginica"
+print(df[df_virginica].describe())
+print("\n")

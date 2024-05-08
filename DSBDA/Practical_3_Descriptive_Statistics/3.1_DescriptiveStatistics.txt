@@ -1,0 +1,59 @@
+import pandas as pd
+
+
+df = pd.read_csv('wages.csv')
+
+
+print("-------------Dataframe Described-------------")
+print(df.describe())
+print("\n")
+
+
+print("-------------Dataframe Shape-----------------")
+print(df.shape)
+print("\n")
+
+
+print("-------------Dataframe Size-----------------")
+print(df.size)
+print("\n")
+
+
+print("-------------Dataframe Min Value-----------------")
+print(df.min())
+print("\n")
+
+
+print("-------------Dataframe Max Value-----------------")
+print(df.max())
+print("\n")
+
+
+print("-------------Age Column Mean-----------------")
+print(df['age'].mean())
+print("\n")
+
+
+print("-------------Age Column Median-----------------")
+print(df['age'].median())
+print("\n")
+
+
+print("-------------Age Column Mode-----------------")
+print(df['age'].mode())
+print("\n")
+
+
+print("-------------Age Column Standard Deviation-----------------")
+print(round(df['age'].std(),4))
+print("\n")
+
+
+print("-------------Age Column Descibe-----------------")
+print(round(df['age'].describe(),3))
+print("\n")
+
+
+print("-------------Age Column Grouped By Education (Describe)-----------------")
+print(df['age'].groupby(df['ed']).describe())
+print("\n")
